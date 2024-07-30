@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Test File Delete</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+</head>
+<body class="bg-secondary">
+    <div class="container text-center mt-5">
+        <h1>Test File Delete</h1>
+        <p class="lead">Enter the name of the file you want to delete:</p>
+        <div class="form-group">
+            <input type="text" id="filename" class="form-control" placeholder="Enter filename here">
+        </div>
+        <button class="btn btn-danger mt-3" onclick="deleteFile()">Delete File</button>
+        <div id="result" class="alert mt-3"></div>
+        <a href="/index.html" class="btn btn-secondary mt-3">Back to Main Page</a>
+    </div>
+    <script>
+        function deleteFile() {
+            const filename = document.getElementById('filename').value;
+            if (!filename) {
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'alert alert-warning';
+                resultDiv.textContent = 'Please enter a filename.';
+                return;
+            }
+
+            const encodedFilename = encodeURIComponent(filename);
+
+            fetch('/upload/' + encodedFilename, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                const resultDiv = document.getElementById('result');
+                if (response.ok) {
+                    resultDiv.className = 'alert alert-success';
+                    resultDiv.textContent = 'File deleted successfully.';
+                } else {
+                    resultDiv.className = 'alert alert-danger';
+                    resultDiv.textContent = 'Failed to delete file.';
+                }
+            })
+            .catch(error => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'alert alert-danger';
+                resultDiv.textContent = 'Error: ' + error;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Webserv Test Page</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.png">
+</head>
+<body class="bg-secondary">
+    <div class="container text-center mt-5">
+        <h1>Webserv Test Page</h1>
+        <p class="lead">Testing various functionalities</p>
+        <ul class="list-group mb-4">
+            <li class="list-group-item"><a href="/index.html" target="_blank">Test GET request for existing file</a></li>
+            <li class="list-group-item"><a href="/nonexistent.html" target="_blank">Test GET request for non-existent file</a></li>
+            <li class="list-group-item"><a href="/cgi-bin/test.php" target="_blank">Test CGI script execution</a></li>
+            <li class="list-group-item"><a href="/upload_test.html" target="_blank">Test File Upload (POST request)</a></li>
+            <li class="list-group-item"><a href="/delete_test.html" target="_blank">Test File Delete (DELETE request)</a></li>
+            <li class="list-group-item"><a href="#" onclick="testMethodNotAllowed(); return false;">Test "PUT" 405 Method Not Allowed</a></li>
+            <li class="list-group-item"><a href="/cause500" target="_blank">Test 500 Internal Server Error</a></li>
+            <li class="list-group-item"><a href="/old-path" target="_blank">Test Redirect old-path To new-path</a></li>
+            <li class="list-group-item"><a href="/images" target="_blank">Test List Directory</a></li>
+        </ul>
+        <div id="result" class="alert"></div>
+    </div>
+</body>
+<script>
+    function testMethodNotAllowed() {
+        fetch('/index.html', {
+            method: 'PUT'
+        })
+        .then(response => {
+            const resultDiv = document.getElementById('result');
+            if (response.status === 405) {
+                resultDiv.className = 'alert alert-success';
+                resultDiv.textContent = 'Received 405 Method Not Allowed as expected.';
+            } else {
+                resultDiv.className = 'alert alert-danger';
+                resultDiv.textContent = 'Expected 405 Method Not Allowed, but received status ' + response.status;
+            }
+        })
+        .catch(error => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'alert alert-danger';
+            resultDiv.textContent = 'Error: ' + error;
+        });
+    }
+</script>
+</html>
